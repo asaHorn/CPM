@@ -19,5 +19,6 @@ async def on_message(message):
 
 
 f = open('secrets.txt')
+print('Hi, I need to make changes to this file as a test')
 secret = f.read()
 client.run('secret')
