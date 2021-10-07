@@ -1,24 +1,29 @@
 import discord
+import random
 from pswdFactory.pswdFactory import getPswdList
 
-client = discord.Client()
+description = '''Asa's bot for fucking around with stuff'''
+
+intents = discord.Intents.default()
+intents.members = True
+
+bot = commands.Bot(command_prefix='$', description=description, intents=intents)
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print('We have logged in as {0.user}'.format(bot))
 
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
 
     if message.content.startswith('$hello'):
-        await message.channel.send('Hello World!, I made this just for you... ' + getPswdList(1))
+        await message.channel.send('Hello World! I made this just for you... ' + getPswdList(1))
 
 
 f = open('secrets.txt')
-print('Hi, I need to make changes to this file as a test')
 secret = f.read()
-client.run('secret')
+bot.run(secret)
