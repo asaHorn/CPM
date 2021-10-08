@@ -8,7 +8,7 @@ def getRandomWord(maxLen):
   Takes:
     maxLen - maximum length of the returned word
   """
-  with open("pswdFactory/words.txt") as src:
+  with open("pwdFactory/words.txt") as src:
     dicList = src.readlines()
     while True:
       word = dicList[random.randrange(0, len(dicList))][:-1]
@@ -58,7 +58,7 @@ def pswdList(amount=50, maxLen=6, nWords=3, dChance=33):
   return ret
 
 
-def getPswdList(amount=50, maxLen=6, nWords=3, dChance=33):
+def getPwdList(amount=50, maxLen=6, nWords=3, dChance=33):
   """
   helper function which is meant to abstract the password creation process.
   Simply calles pswdList with given perams
