@@ -49,15 +49,15 @@ async def list(ctx):
         await ctx.send('I am not tracking any passwords')
         return
 
-    dump = dump.strip(' ')
     dumpList = dump[1:-1].split(',')  # [1,-1] chops out {}s
 
     ret = "```"
     i = 0
     for x in dumpList:
+        x = x.strip(' ')
         elements = x.split(':')
-        ret += str(i) + '. ' + elements[0] + getSpacing(elements[0], 70) \
-               + getSpacing(elements[1], 70) + elements[1] + '\n'
+        ret += getSpacing(str(i), 3) + str(i) + '. ' + elements[0] + getSpacing(elements[0]) \
+               + getSpacing(elements[1], 25) + elements[1] + '\n'
         i += 1
     ret += "```"
     await ctx.send(ret)
@@ -73,7 +73,7 @@ async def list(ctx):
 ##########################################################
 ##Helper functions###
 ##########################################################
-def getSpacing(s: str, tLen: int):
+def getSpacing(s: str, tLen: int=35):
     ret = ""
     for _ in range(tLen - len(s)):
         ret += ' '
