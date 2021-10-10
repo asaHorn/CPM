@@ -21,7 +21,7 @@ class pwdStore:
         return self.makeID(user, box) + ': ' + self.getPwd(user, box)
 
     def makeID(self, user: str, box: str):
-        return user + '/' + box
+        return box + '/' + user
 
     def dump(self):
         """
