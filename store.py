@@ -25,13 +25,6 @@ class pwdStore:
 
     def dump(self):
         """
-        returns a list of tuples with all currently tracked passwords
-        format: [((ID, pass)), ((ID2, pass2))]
+        returns a string with all currently tracked passwords
         """
         return str(self.pwds)
-
-        ret = []
-        for x in self.pwds:
-            ret += ((list(self.pwds.keys())[list(self.pwds.values()).index(x)], x))
-
-        return ret
