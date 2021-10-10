@@ -13,12 +13,9 @@ ram = randomStorage()
 
 
 @bot.command()
-async def listHere(ctx):
+async def list(ctx):
     """
-    sets the channel to send $list to.
-
-    Usage: run this command in desired channel
-    "$listHere"
+    makes a new auto-updated list of all tracked passwords
     """
     embed = discord.Embed(title="source", url="https://github.com/asaHorn/CPM",
                           description="If you see this CPM is fucked", color=0xff0000)
@@ -27,6 +24,12 @@ async def listHere(ctx):
     ram.displayMessage = await ctx.send(embed=embed)
     print(ram.displayMessage)
     await ram.displayMessage.edit(embed=display())
+
+    # todo group entries by type (net, windows, linux) then location (cloud, LAN, other stuff) then by box.
+
+    # todo colors
+
+    # todo pretty headings
 
 
 @bot.command()
@@ -61,42 +64,6 @@ async def get(ctx, box, user):
     send the requested user / box record to discord
     """
     await ctx.send(psm.prettyGetPwd(user, box))
-
-
-@bot.command()
-async def list(ctx):
-    await ram.displayMessage.edit(embed=display())
-
-
-@bot.command()
-async def oldList(ctx):
-    """
-    print out a pretty table of all tracked passwords
-
-    **older, try $list  instead**
-    """
-    dump = psm.dump()
-    if dump == "{}":
-        await ctx.send('I am not tracking any passwords')
-        return
-
-    dumpList = dump[1:-1].split(',')  # [1,-1] chops out {}s
-
-    ret = "```"
-    i = 0
-    for x in dumpList:
-        x = x.strip(' ')
-        elements = x.split(':')
-        ret += getSpacing(str(i), 3) + str(i) + '. ' + elements[0] + getSpacing(elements[0]) \
-               + getSpacing(elements[1], 25) + elements[1] + '\n'
-        i += 1
-    ret += "```"
-    await ctx.send(ret)
-
-    # todo group entries by type (net, windows, linux) then location (cloud, LAN, other stuff) then by box.
-    # todo colors
-    # todo pretty headings
-
 
 # todo add history
 
