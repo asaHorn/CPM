@@ -9,3 +9,5 @@ Usage:
 3. pip install discord.py
 4. invite your bot to your server using the OAuth2 section of the application page, give bot permission (need manage perms on discord server)
 5. then run main.py
+
+I am not a support person. If this doesn't work don't expect my assistance. There are thousands of toutorials on how to join bots to servers.
