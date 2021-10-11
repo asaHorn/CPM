@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands
-from time import localtime, strftime
-
 
 from pwdFactory.pwdFactory import getPwdList
 from store import pwdStore
@@ -13,6 +11,14 @@ ram = randomStorage()
 
 
 @bot.command()
+async def addTopo(ctx, *args):
+    send = ''
+    for x in args:
+        send += x + ' '
+
+    await ctx.send(psm.addTopo(send))
+
+@bot.command()
 async def list(ctx):
     """
     makes a new auto-updated list of all tracked passwords
@@ -22,40 +28,51 @@ async def list(ctx):
     embed.set_author(name="CPM")
 
     ram.displayMessage = await ctx.send(embed=embed)
-    print(ram.displayMessage)
-    await ram.displayMessage.edit(embed=display())
-
-    # todo group entries by type (net, windows, linux) then location (cloud, LAN, other stuff) then by box.
-
-    # todo colors
-
-    # todo pretty headings
+    await ram.displayMessage.edit(embed=psm.display())
 
 
 @bot.command()
-async def new(ctx, box, user):
+async def new(ctx, box, user, *args):
     """
     makes new password attached to the user account ACCOUNT on the machine BOX.
     if the account box combo already has a password will override it and state the old password
+
+    usage:
+    $new box user <note1>,<note2> <note3>....
+        Special notes:
+        -^(note) will cause all passwords tagged with this note to be displayed separately
+        -admin will cause user to be bolded on list
+        -any other notes will appear in the Notes heading on display
     """
     user = user.lower()
     box = box.lower()
     pwd = getPwdList(1)
+    tagList = []
+
+    for entry in args:
+        tagList += entry.split(',')
+
+    for tag in tagList:
+        tag = tag.lower()
 
     if psm.exists(user, box):
         old = psm.getPwd(user, box)
-        psm.addPwd(user, box, pwd)
+        psm.addPwd(user, box, pwd, tagList)
         await ctx.send('Changed: ' + psm.makeID(user, box) + ' ' +
                        old + ' --> ' + psm.getPwd(user, box))
         await ctx.send('Remember to update password in scoring or CPM will be sad :(')
-        await ram.displayMessage.edit(embed=display())
-        return
+    else:
+        errors = psm.addPwd(user, box, pwd, tagList)
+        if errors != '``````':
+            await ctx.send(errors)
+            if errors[0:26] == 'Unable to add password...':
+                return
+        await ctx.send('Added: ' + psm.prettyGetPwd(user, box))
 
-    psm.addPwd(user, box, pwd)
-    if display() == 10:
-        ctx.send("I can't find an active display, use $listHere to fix this")
-    await ctx.send('Added: ' + psm.prettyGetPwd(user, box))
-    await ram.displayMessage.edit(embed=display())
+    if ram.displayMessage == '':
+        await ctx.send("I can't find an active display, use $list to fix this")
+        return
+    await ram.displayMessage.edit(embed=psm.display())
 
 
 @bot.command()
@@ -77,42 +94,6 @@ def getSpacing(s: str, tLen: int=35):
     for _ in range(tLen - len(s)):
         ret += ' '
     return ret
-
-
-def display():
-    dump = psm.dump()
-    if dump == '{}':
-        embed = discord.Embed(title="source", url="https://github.com/asaHorn/CPM",
-                              description="CPM isn't currently tracking anything", color=0xff0000)
-        embed.set_author(name="CPM")
-        embed.set_footer(text="last updated: " + strftime("%I:%M:%S %p", localtime()))
-
-    else:
-        dumpList = dump[1:-1].split(',')  # [1,-1] chops out {}s
-
-        i = 1
-        counter = ""
-        users = ""
-        passwords = ""
-        for x in dumpList:
-            x = x.strip(' ')
-            elements = x.split(':')
-            counter += str(i) + '.\n'
-            users += elements[0] + '\n'
-            passwords += elements[1] + '\n'
-            i += 1
-
-        print(counter[-3])
-        embed = discord.Embed(title="source", url="https://github.com/asaHorn/CPM",
-                              description="CPM tracking " + counter[-3] + " passwords over ... systems", color=0xff0000)
-        embed.set_author(name="CPM")
-        embed.add_field(name="n", value=counter, inline=True)
-        embed.add_field(name="User", value=users, inline=True)
-        embed.add_field(name="Pass", value=passwords, inline=True)
-        embed.set_footer(text="last updated: " + strftime("%I:%M:%S %p", localtime()))
-
-    return embed
-
 
 f = open('secrets.txt')
 secret = f.read()
