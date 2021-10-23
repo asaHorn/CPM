@@ -24,7 +24,7 @@ async def list(ctx):
     makes a new auto-updated list of all tracked passwords
     """
     embed = discord.Embed(title="source", url="https://github.com/asaHorn/CPM",
-                          description="If you see this CPM is fucked", color=0xff0000)
+                          description="If you see this PPM is fucked", color=0xff0000)
     embed.set_author(name="CPM")
 
     ram.displayMessage = await ctx.send(embed=embed)
@@ -60,7 +60,7 @@ async def new(ctx, box, user, *args):
         psm.addPwd(user, box, pwd, tagList)
         await ctx.send('Changed: ' + psm.makeID(user, box) + ' ' +
                        old + ' --> ' + psm.getPwd(user, box))
-        await ctx.send('Remember to update password in scoring or CPM will be sad :(')
+        await ctx.send('Remember to update password in scoring or Polly will be sad :(')
     else:
         errors = psm.addPwd(user, box, pwd, tagList)
         if errors != '``````':
